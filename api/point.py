@@ -43,11 +43,32 @@ class Point(object):
 
 class MarkedPoint(Point):
     '''
-    Point with stamp field
+    Point with text field
     '''
 
-    def __init__(self, latitude, longitude, stamp = None):
+    def __init__(self, latitude, longitude, field = None):
         super(Point, self).__init__(latitude, longitude)
+        self.__field = field
+
+    @property
+    def field(self):
+        return self.__field
+
+    @field.setter
+    def field(self, value):
+        self.__field = str(value[:45])
+
+    def __eq__(self, other):
+        if not isinstance(other, Point):
+            return NotImplemented
+        return self.__latitude == other.latitude and self.__longitude == other.longitude and self.__field == other.field
+
+
+
+
+
+
+
 
 
 

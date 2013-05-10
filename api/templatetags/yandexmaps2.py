@@ -7,6 +7,7 @@ from django.conf import settings
 
 import datetime
 from api.api import Yandexapi
+from api.point import Point
 
 API_KEY = getattr(settings, 'API_KEY')
 
@@ -33,10 +34,12 @@ class CurrentTimeNode(template.Node):
 def static_map_a(parser, token):
     try:
         tag_name, address, width, height, mode = token.split_contents()
+        width = int(width)
+        height = int(height)
     except ValueError:
-        msg = '%r tag requires 4 args' % token.split_contents[0]
+        msg = '%r tag requires four args, width and height is int' % token.split_contents()[0]
         raise template.TemplateSyntaxError(msg)
-    return StaticMapA(address[1:-1], int(width), int(height), mode[1:-1])
+    return StaticMapA(address[1:-1], width, height, mode[1:-1])
 
 
 class StaticMapA(template.Node):
@@ -52,3 +55,32 @@ class StaticMapA(template.Node):
         url = Yandexapi.getStaticMapUrlParams(point, self.__width, self.__height, self.__mode)
         return '<img src=%s width=%s height=%s/>' % (url, self.__width, self.__height)
 
+
+@register.tag(name='static_map_p')
+def static_map_p(parser, token):
+    try:
+        tag_name, latitude, longitude, width, height, mode = token.split_contents()
+        latitude = float(latitude)
+        longitude = float(longitude)
+        width = int(width)
+        height = int(height)
+    except ValueError:
+        pass
+        msg = '%r tag requires five args, width,height is int and lat,lon is float' % token.split_contents()[0]
+        raise template.TemplateSyntaxError(msg)
+    return StaticMapP(latitude, longitude, width, height, mode[1:-1])
+
+
+class StaticMapP(template.Node):
+    def __init__(self, latitude, longitude, width, height, mode = None):
+        self.__latitude = latitude
+        self.__longitude = longitude
+        self.__width = width
+        self.__height = height
+        self.__mode = mode
+
+    def render(self, context):
+        api = Yandexapi(API_KEY)
+        point = Point(self.__latitude, self.__longitude)
+        url = Yandexapi.getStaticMapUrlParams(point, self.__width, self.__height, self.__mode)
+        return '<img src=%s width=%s height=%s/>' % (url, self.__width, self.__height)
