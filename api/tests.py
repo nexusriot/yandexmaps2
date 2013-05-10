@@ -45,3 +45,10 @@ class ApiTest(TestCase):
         result = api.reverse(point)
         self.assertEqual(address, result, None)
 
+    def test_staticMapP(self):
+        point = Point(37.521309,55.753134)
+        link = 'http://static-maps.yandex.ru/1.x/?ll=37.5213090,55.7531340&size=400,400&l=map&spn=0.003,0.003'
+        result = Yandexapi.getStaticMapUrlParams(point, 400, 400)
+        self.assertEqual(link, result)
+
+

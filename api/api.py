@@ -103,3 +103,25 @@ class Yandexapi(object):
             resp+= '%0.7f,%0.7f,%d~' % (point.latitude, point.longitude, i + 1)
         resp = resp[:-1]
         return resp
+
+    @staticmethod
+    def getStaticMapUrlParams(centerpoint, weight, height, mode = 'map', spn = 0.003, objectpoint = None,  *args, **kwargs):
+        if objectpoint == None:
+            objectpoint = centerpoint
+
+        opt = [
+            'll=%0.7f,%0.7f' % (centerpoint.latitude, centerpoint.longitude),
+            'size=%d,%d' % (weight, height),
+            #'sll=%0.7f,%0.7f' % (objectpoint.latitude, objectpoint.longitude),
+        ]
+
+        modeOptions = {
+            'map':   'l=map',    #regular map
+            'pmap':  'l-pmap',   #people's map
+            'sat':   'l=sat',    #satelete map
+            'sat,skl': 'l=sat,skl'#"hybrid"
+        }
+        opt.append(modeOptions.get(mode, 'l=map'))
+        opt.append('spn=%0.3f,%0.3f' % (spn, spn))
+
+        return STATIC_URL + '&'.join(opt)

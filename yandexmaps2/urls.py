@@ -8,7 +8,7 @@ from django.conf.urls import patterns, include, url
 urlpatterns = patterns('',
 # TODO: test pattern
 
-    url(r'^map/$', 'api.views.hello', name='map'),
+    url(r'^map/$', 'api.views.test_static', name='static_map'),
     # Examples:
     # url(r'^$', 'yandexmaps2.views.home', name='home'),
     # url(r'^yandexmaps2/', include('yandexmaps2.foo.urls')),
